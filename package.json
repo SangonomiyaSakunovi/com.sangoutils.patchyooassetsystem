@@ -10,7 +10,8 @@
     "PatchSystem"
   ],
   "dependencies": {
-    "com.unity.textmeshpro": "3.0.6",
-    "com.tuyoogame.yooasset": "2.1.2"
+    "com.code-philosophy.hybridclr": "6.9.0",
+    "com.tuyoogame.yooasset": "2.2.3",
+    "com.unity.textmeshpro": "3.0.6"
   }
 }

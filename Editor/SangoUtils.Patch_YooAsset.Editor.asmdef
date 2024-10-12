@@ -1,0 +1,16 @@
+{
+    "name": "SangoUtils.Patch_YooAsset.Editor",
+    "rootNamespace": "SangoUtils.Patch_YooAsset",
+    "references": [
+        "GUID:19c91f21cad552f428e76ba715f6e221"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
