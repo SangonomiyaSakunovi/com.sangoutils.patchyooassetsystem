@@ -22,7 +22,7 @@ namespace SangoUtils.Patchs_YooAsset
             var cfg = new PatchConfig();
             SetConfig(ref cfg);
             EventBus_Patchs.PatchConfig = cfg;
-            EventBus_Patchs.PatchEvent = GetComponent<SangoPatchEvent>();
+            EventBus_Patchs.SetCustomPatchEvent(GetComponent<SangoPatchEvent>());
 
             EventBus_Patchs.AddPatchSystemEvent(OnPatchSystemEvent);
             EventBus_Patchs.AddPatchSystem_DownloadProgressUpdateEvent(OnPatchSystemDownloadProgressUpdateEvent);
@@ -39,6 +39,15 @@ namespace SangoUtils.Patchs_YooAsset
         }
 
         private void Start()
+        {
+            StartOperationASync().Start();
+            _sangoPatchWnd.OnStart();
+        }
+
+        /// <summary>
+        /// TODO: Only for test.
+        /// </summary>
+        public void ReStartDefaultHotFix()
         {
             StartOperationASync().Start();
             _sangoPatchWnd.OnStart();
@@ -83,7 +92,7 @@ namespace SangoUtils.Patchs_YooAsset
             ResourcePackage assetPackage = YooAssets.GetPackage(EventBus_Patchs.PatchConfig.PackageName);
             YooAssets.SetDefaultPackage(assetPackage);
 
-            EventBus_Patchs.CallPatchSystemEvent(this, new PatchSystemEventArgs(PatchSystemEventCode.ClosePatchWindow));
+            EventBus_Patchs.CallPatchSystemEvent(this, new PatchSystemEventArgs(PatchSystemEventCode.OnPatchEnd));
         }
 
         private void OnPatchSystemEvent(object sender, PatchSystemEventArgs eventArgs)
@@ -136,7 +145,7 @@ namespace SangoUtils.Patchs_YooAsset
                     };
                     _sangoPatchWnd.OnShowMessageBox($"Failed to download file : {fileName}", callback4);
                     break;
-                case PatchSystemEventCode.ClosePatchWindow:
+                case PatchSystemEventCode.OnPatchEnd:
                     _sangoPatchWnd.OnEnd();
                     break;
             }

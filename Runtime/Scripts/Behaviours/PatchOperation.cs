@@ -39,7 +39,7 @@ namespace SangoUtils.Patchs_YooAsset
             AddPatchOperationOP<PatchOperationOP_DownloadPackageOver>();
             AddPatchOperationOP<PatchOperationOP_ClearPackageCache>();
             AddPatchOperationOP<PatchOperationOP_LoadDll>();
-            AddPatchOperationOP<PatchOperationOP_UpdaterDone>();
+            AddPatchOperationOP<PatchOperationOP_PatchDone>();
         }
 
         private void OnPatchUserEvent(object sender, PatchUserEventArgs eventArgs)
@@ -70,7 +70,7 @@ namespace SangoUtils.Patchs_YooAsset
             {
                 patchOperationOP.OnEvent();
             }
-            if (eventArgs.PatchOperationEventCode == PatchOperationEventCode.UpdaterDone)
+            if (eventArgs.PatchOperationEventCode == PatchOperationEventCode.PatchDone)
             {
                 EventBus_Patchs.RemovePatchOperationEvent(OnPatchOperationEvent);
                 EventBus_Patchs.RemovePatchUserEvent(OnPatchUserEvent);

@@ -4,33 +4,35 @@ namespace SangoUtils.Patchs_YooAsset
 {
     internal class EventBus_Patchs
     {
-        public static EventBus_Patchs _this;
+        private static EventBus_Patchs _instance;
 
-        public EventBus_Patchs() { _this = this; }
+        public EventBus_Patchs() { _instance = this; }
 
         private PatchConfig _patchConfig;
+        internal static PatchConfig PatchConfig { get => _instance._patchConfig; set => _instance._patchConfig ??= value; }
+
         private SangoPatchEvent _patchEvent;
-        internal static PatchConfig PatchConfig { get => _this._patchConfig; set => _this._patchConfig ??= value; }
-        internal static SangoPatchEvent PatchEvent { get => _this._patchEvent; set => _this._patchEvent ??= value; }
+        internal static void SetCustomPatchEvent(SangoPatchEvent patchEvent) { _instance._patchEvent = patchEvent; }
+        internal static void CallCustomPatchEvent(CustomPatchEventCode code) { _instance._patchEvent.CallEvent(code); }
 
         private event Action<object, PatchSystemEventArgs> _patchSystemEvent;
-        public static void AddPatchSystemEvent(Action<object, PatchSystemEventArgs> action) { _this._patchSystemEvent += action; }
-        public static void RemovePatchSystemEvent(Action<object, PatchSystemEventArgs> action) { _this._patchSystemEvent -= action; }
-        public static void CallPatchSystemEvent(object sender, PatchSystemEventArgs eventArgs) { _this._patchSystemEvent?.Invoke(sender, eventArgs); }
+        public static void AddPatchSystemEvent(Action<object, PatchSystemEventArgs> action) { _instance._patchSystemEvent += action; }
+        public static void RemovePatchSystemEvent(Action<object, PatchSystemEventArgs> action) { _instance._patchSystemEvent -= action; }
+        public static void CallPatchSystemEvent(object sender, PatchSystemEventArgs eventArgs) { _instance._patchSystemEvent?.Invoke(sender, eventArgs); }
 
         private event Action<object, PatchUserEventArgs> _patchUserEvent;
-        public static void AddPatchUserEvent(Action<object, PatchUserEventArgs> action) { _this._patchUserEvent += action; }
-        public static void RemovePatchUserEvent(Action<object, PatchUserEventArgs> action) { _this._patchUserEvent -= action; }
-        public static void CallPatchUserEvent(object sender, PatchUserEventArgs eventArgs) { _this._patchUserEvent?.Invoke(sender, eventArgs); }
+        public static void AddPatchUserEvent(Action<object, PatchUserEventArgs> action) { _instance._patchUserEvent += action; }
+        public static void RemovePatchUserEvent(Action<object, PatchUserEventArgs> action) { _instance._patchUserEvent -= action; }
+        public static void CallPatchUserEvent(object sender, PatchUserEventArgs eventArgs) { _instance._patchUserEvent?.Invoke(sender, eventArgs); }
 
         private event Action<object, PatchOperationEventArgs> _patchOperationEvent;
-        public static void AddPatchOperationEvent(Action<object, PatchOperationEventArgs> action) { _this._patchOperationEvent += action; }
-        public static void RemovePatchOperationEvent(Action<object, PatchOperationEventArgs> action) { _this._patchOperationEvent -= action; }
-        public static void CallPatchOperationEvent(object sender, PatchOperationEventArgs eventArgs) { _this._patchOperationEvent?.Invoke(sender, eventArgs); }
+        public static void AddPatchOperationEvent(Action<object, PatchOperationEventArgs> action) { _instance._patchOperationEvent += action; }
+        public static void RemovePatchOperationEvent(Action<object, PatchOperationEventArgs> action) { _instance._patchOperationEvent -= action; }
+        public static void CallPatchOperationEvent(object sender, PatchOperationEventArgs eventArgs) { _instance._patchOperationEvent?.Invoke(sender, eventArgs); }
 
         private event Action<object, PatchSystem_DownloadProgressUpdateEventArgs> _patchSystem_DownloadProgressUpdateEvent;
-        public static void AddPatchSystem_DownloadProgressUpdateEvent(Action<object, PatchSystem_DownloadProgressUpdateEventArgs> action) { _this._patchSystem_DownloadProgressUpdateEvent += action; }
-        public static void RemovePatchSystem_DownloadProgressUpdateEvent(Action<object, PatchSystem_DownloadProgressUpdateEventArgs> action) { _this._patchSystem_DownloadProgressUpdateEvent -= action; }
-        public static void CallPatchSystem_DownloadProgressUpdateEvent(object sender, PatchSystem_DownloadProgressUpdateEventArgs eventArgs) { _this._patchSystem_DownloadProgressUpdateEvent?.Invoke(sender, eventArgs); }
+        public static void AddPatchSystem_DownloadProgressUpdateEvent(Action<object, PatchSystem_DownloadProgressUpdateEventArgs> action) { _instance._patchSystem_DownloadProgressUpdateEvent += action; }
+        public static void RemovePatchSystem_DownloadProgressUpdateEvent(Action<object, PatchSystem_DownloadProgressUpdateEventArgs> action) { _instance._patchSystem_DownloadProgressUpdateEvent -= action; }
+        public static void CallPatchSystem_DownloadProgressUpdateEvent(object sender, PatchSystem_DownloadProgressUpdateEventArgs eventArgs) { _instance._patchSystem_DownloadProgressUpdateEvent?.Invoke(sender, eventArgs); }
     }
 }

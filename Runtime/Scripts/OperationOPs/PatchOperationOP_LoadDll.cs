@@ -87,7 +87,7 @@ namespace SangoUtils.Patchs_YooAsset
         private void OnLoadedDll()
         {
             Debug.Log("[Attention] 看到此行信息代表加载热更新代码结束，但还没有被运行！");
-            EventBus_Patchs.CallPatchOperationEvent(this, new PatchOperationEventArgs(PatchOperationEventCode.UpdaterDone));
+            EventBus_Patchs.CallPatchOperationEvent(this, new PatchOperationEventArgs(PatchOperationEventCode.PatchDone));
         }
     }
 }

@@ -16,21 +16,24 @@ namespace SangoUtils.Patchs_YooAsset
 
         private IEnumerator BeginDownloadASync()
         {
-            var downloader = EventBus_Patchs.PatchConfig.ResourceDownloaderOperation;
-            downloader.OnDownloadErrorCallback = delegate (string fileName, string error)
-            {
-                EventBus_Patchs.CallPatchSystemEvent(this, new PatchSystemEventArgs(PatchSystemEventCode.WebFileDownloadFailed, fileName, error));
-            };
-            downloader.OnDownloadProgressCallback = delegate (int totalDownloadCount, int currentDownloadCount, long totalDownloadSizeBytes, long currentDownloadSizeBytes)
+            var downloaderOperation = EventBus_Patchs.PatchConfig.ResourceDownloaderOperation;
+            downloaderOperation.OnDownloadProgressCallback = delegate (int totalDownloadCount, int currentDownloadCount, long totalDownloadSizeBytes, long currentDownloadSizeBytes)
             {
                 EventBus_Patchs.CallPatchSystem_DownloadProgressUpdateEvent(this, new PatchSystem_DownloadProgressUpdateEventArgs
                     (totalDownloadCount, currentDownloadCount, totalDownloadSizeBytes, currentDownloadSizeBytes));
             };
-            downloader.BeginDownload();
-            yield return downloader;
+            downloaderOperation.OnDownloadErrorCallback = delegate (string fileName, string error)
+            {
+                EventBus_Patchs.CallPatchSystemEvent(this, new PatchSystemEventArgs(PatchSystemEventCode.WebFileDownloadFailed, fileName, error));
+            };
+            downloaderOperation.BeginDownload();
+            yield return downloaderOperation;
 
-            if (downloader.Status != EOperationStatus.Succeed)
+            if (downloaderOperation.Status != EOperationStatus.Succeed)
+            {
+                EventBus_Patchs.CallCustomPatchEvent(CustomPatchEventCode.PatchFailed);
                 yield break;
+            }
 
             EventBus_Patchs.CallPatchOperationEvent(this, new PatchOperationEventArgs(PatchOperationEventCode.DownloadPackageOver));
         }

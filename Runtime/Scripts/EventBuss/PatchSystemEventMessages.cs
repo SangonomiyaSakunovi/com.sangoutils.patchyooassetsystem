@@ -23,7 +23,7 @@ namespace SangoUtils.Patchs_YooAsset
         PackageVersionUpdateFailed,
         PatchManifestUpdateFailed,
         WebFileDownloadFailed,
-        ClosePatchWindow
+        OnPatchEnd
     }
 
     internal class PatchSystem_DownloadProgressUpdateEventArgs : EventArgs
@@ -81,7 +81,7 @@ namespace SangoUtils.Patchs_YooAsset
         DownloadPackageOver,
         ClearPackageCache,
         LoadDll,
-        UpdaterDone
+        PatchDone
     }
 
     internal abstract class PatchOperationOP_Base
@@ -89,5 +89,12 @@ namespace SangoUtils.Patchs_YooAsset
         internal abstract PatchOperationEventCode PatchOperationEventCode { get; }
 
         internal abstract void OnEvent();
+    }
+
+    internal enum CustomPatchEventCode
+    {
+        None = 0,
+        PatchDone = 1,
+        PatchFailed = 2,
     }
 }
