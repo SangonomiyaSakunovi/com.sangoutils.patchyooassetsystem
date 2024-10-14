@@ -24,6 +24,7 @@ namespace SangoUtils.Patchs_YooAsset
 
         private SerializedProperty _playMode;
         private SerializedProperty _buildPipeline;
+        private SerializedProperty _specialBuildTarget;
 
         private SerializedProperty _aotAssemblyFileNames;
         private SerializedProperty _hotFixAssemblyFileNames;
@@ -52,6 +53,7 @@ namespace SangoUtils.Patchs_YooAsset
 
             _playMode = serializedObject.FindProperty("_playMode");
             _buildPipeline = serializedObject.FindProperty("_buildPipeline");
+            _specialBuildTarget = serializedObject.FindProperty("_specialBuildTarget");
 
             _aotAssemblyFileNames = serializedObject.FindProperty("_aotAssemblyFileNames");
             _hotFixAssemblyFileNames = serializedObject.FindProperty("_hotFixAssemblyFileNames");
@@ -96,6 +98,10 @@ namespace SangoUtils.Patchs_YooAsset
             EditorGUILayout.LabelField("YooAsset State, see the Document.", EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(_playMode);
             EditorGUILayout.PropertyField(_buildPipeline);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Choose if target is special, such as WechatMiniGame, etc.", EditorStyles.boldLabel);
+            EditorGUILayout.PropertyField(_specialBuildTarget);
 
             EditorGUILayout.Space();
             EditorGUILayout.LabelField("The Hybrid Settings, you need separate all assemblies into AOTs and HotFixs.", EditorStyles.boldLabel);

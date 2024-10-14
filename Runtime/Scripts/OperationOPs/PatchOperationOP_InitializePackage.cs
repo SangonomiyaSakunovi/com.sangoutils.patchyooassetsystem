@@ -55,7 +55,15 @@ namespace SangoUtils.Patchs_YooAsset
             if (playMode == EPlayMode.WebPlayMode)
             {
                 var createParameters = new WebPlayModeParameters();
+
+#if UNITY_WEBGL && WEIXINMINIGAME && !UNITY_EDITOR
+			    string defaultHostServer = GetHostServerURL();
+                string fallbackHostServer = GetHostServerURL();
+                IRemoteServices remoteServices = new RemoteServices(defaultHostServer, fallbackHostServer);
+                createParameters.WebFileSystemParameters = WechatFileSystemCreater.CreateWechatFileSystemParameters(remoteServices);
+#else
                 createParameters.WebFileSystemParameters = FileSystemParameters.CreateDefaultWebFileSystemParameters();
+#endif
                 initializationOperation = package.InitializeAsync(createParameters);
             }
 

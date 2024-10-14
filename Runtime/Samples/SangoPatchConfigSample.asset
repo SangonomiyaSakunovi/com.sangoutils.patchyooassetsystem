@@ -27,6 +27,7 @@ MonoBehaviour:
   _defaultTimeout: 60
   _playMode: 2
   _buildPipeline: 0
+  _specialBuildTarget: 0
   _aotAssemblyFileNames:
   - mscorlib.dll
   - System.dll

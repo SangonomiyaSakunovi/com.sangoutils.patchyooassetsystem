@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SangoUtils.Patchs_YooAsset
+﻿namespace SangoUtils.Patchs_YooAsset
 {
     public struct AssetBundleMessage_DownloadASync
     {
