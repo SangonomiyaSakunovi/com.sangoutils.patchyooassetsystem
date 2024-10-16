@@ -37,7 +37,7 @@ namespace SangoUtils.Patchs_YooAsset
                 _hotFixAssemblies.Add(assembly);
 #else
 
-                byte[] bytes = ReadBytesFromStreamingAssets(_hotFixAssemblyFileNames[i]);
+                byte[] bytes = ReadBytesFromStreamingAssets(hotFixAssemblyFileNames[i]);
                 Assembly assembly = Assembly.Load(bytes);
                 _hotFixAssemblies.Add(assembly);
 #endif
