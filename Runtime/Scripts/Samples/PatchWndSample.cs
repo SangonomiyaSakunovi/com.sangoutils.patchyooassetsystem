@@ -5,9 +5,9 @@ using UnityEngine.UI;
 
 namespace SangoUtils.Patchs_YooAsset
 {
-    public class SangoPatchWndSample : MonoBehaviour, ISangoPatchWnd
+    public class PatchWndSample : MonoBehaviour, IPatchWnd
     {
-        private SangoPatchRoot _sangoHotFixRoot;
+        private PatchRoot _patchRoot;
         private Transform _messageBoxTrans;
         private TMP_Text _tips;
 
@@ -15,9 +15,9 @@ namespace SangoUtils.Patchs_YooAsset
         private Button _messageBoxOkBtn;
         private TMP_Text _messageBoxContent;
 
-        public void OnInit(SangoPatchRoot root)
+        public void OnInit(PatchRoot root)
         {
-            _sangoHotFixRoot = root;
+            _patchRoot = root;
 
             _messageBoxTrans = transform.Find("MessageBox");
             _tips = transform.Find("tips").GetComponent<TMP_Text>();

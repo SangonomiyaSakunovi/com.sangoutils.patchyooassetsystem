@@ -3,7 +3,7 @@ using UnityEngine.Events;
 
 namespace SangoUtils.Patchs_YooAsset
 {
-    public class SangoPatchEvent : MonoBehaviour
+    public class PatchEvent : MonoBehaviour
     {
         [SerializeField] private UnityEvent _onPatchDone = new();
         [SerializeField] private UnityEvent _onPatchFailed = new();

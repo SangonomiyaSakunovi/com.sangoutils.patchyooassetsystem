@@ -4,7 +4,7 @@ using YooAsset;
 namespace SangoUtils.Patchs_YooAsset
 {
     [CreateAssetMenu(menuName = "SangoUtils/PatchConfig")]
-    internal class SangoPatchConfig : ScriptableObject
+    internal class PatchConfigObj : ScriptableObject
     {
         [SerializeField] private string _cdnPathAndroidEditor = "https://127.0.0.1:8080/CDN/SampleApp/Android/1.0.0";
         [SerializeField] private string _cdnPathIosEditor = "https://127.0.0.1:8080/CDN/SampleApp/IOS/1.0.0";

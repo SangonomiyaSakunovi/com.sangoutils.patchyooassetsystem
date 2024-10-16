@@ -2,9 +2,9 @@ using System;
 
 namespace SangoUtils.Patchs_YooAsset
 {
-    public interface ISangoPatchWnd
+    public interface IPatchWnd
     {
-        void OnInit(SangoPatchRoot root);
+        void OnInit(PatchRoot root);
         void OnStart();
         void OnShowMessageBox(string content, Action onMessageBoxOKBtnClickedCB) ;
         void OnUpdateTips(string content) ;

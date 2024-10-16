@@ -7,13 +7,13 @@ using YooAsset;
 
 namespace SangoUtils.Patchs_YooAsset
 {
-    [RequireComponent(typeof(SangoPatchEvent))]
-    public class SangoPatchRoot : MonoBehaviour
+    [RequireComponent(typeof(PatchEvent))]
+    public class PatchRoot : MonoBehaviour
     {
         [SerializeField] private MonoBehaviour _patchWnd;
-        [SerializeField] private SangoPatchConfig _patchConfig;
+        [SerializeField] private PatchConfigObj _patchConfig;
 
-        private ISangoPatchWnd _sangoPatchWnd;
+        private IPatchWnd _IPatchWnd;
 
         private void Awake()
         {
@@ -22,15 +22,15 @@ namespace SangoUtils.Patchs_YooAsset
             var cfg = new PatchConfig();
             SetConfig(ref cfg);
             EventBus_Patchs.PatchConfig = cfg;
-            EventBus_Patchs.SetCustomPatchEvent(GetComponent<SangoPatchEvent>());
+            EventBus_Patchs.SetCustomPatchEvent(GetComponent<PatchEvent>());
 
             EventBus_Patchs.AddPatchSystemEvent(OnPatchSystemEvent);
             EventBus_Patchs.AddPatchSystem_DownloadProgressUpdateEvent(OnPatchSystemDownloadProgressUpdateEvent);
 
-            if (_patchWnd.GetType().GetInterfaces().Any(iface => iface == typeof(ISangoPatchWnd)))
+            if (_patchWnd.GetType().GetInterfaces().Any(iface => iface == typeof(IPatchWnd)))
             {
-                _sangoPatchWnd = (ISangoPatchWnd)_patchWnd;
-                _sangoPatchWnd.OnInit(this);
+                _IPatchWnd = (IPatchWnd)_patchWnd;
+                _IPatchWnd.OnInit(this);
             }
             else
             {
@@ -41,7 +41,7 @@ namespace SangoUtils.Patchs_YooAsset
         private void Start()
         {
             StartOperationASync().Start();
-            _sangoPatchWnd.OnStart();
+            _IPatchWnd.OnStart();
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace SangoUtils.Patchs_YooAsset
         public void ReStartDefaultHotFix()
         {
             StartOperationASync().Start();
-            _sangoPatchWnd.OnStart();
+            _IPatchWnd.OnStart();
         }
 
         private void SetConfig(ref PatchConfig cfg)
@@ -104,11 +104,11 @@ namespace SangoUtils.Patchs_YooAsset
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryInitialize));
                     };
-                    _sangoPatchWnd.OnShowMessageBox($"Failed to initialize package !", callback);
+                    _IPatchWnd.OnShowMessageBox($"Failed to initialize package !", callback);
                     break;
                 case PatchSystemEventCode.PatchStatesChange:
                     string tips = eventArgs.ExtensionData[0].ToString();
-                    _sangoPatchWnd.OnUpdateTips(tips);
+                    _IPatchWnd.OnUpdateTips(tips);
                     break;
                 case PatchSystemEventCode.FoundUpdateFiles:
                     int totalCount = int.Parse(eventArgs.ExtensionData[0].ToString());
@@ -120,21 +120,21 @@ namespace SangoUtils.Patchs_YooAsset
                     float sizeMB = totalSizeBytes / 1048576f;
                     sizeMB = Mathf.Clamp(sizeMB, 0.1f, float.MaxValue);
                     string totalSizeMB = sizeMB.ToString("f1");
-                    _sangoPatchWnd.OnShowMessageBox($"Found update patch files, Total count {totalCount} Total szie {totalSizeMB}MB", callback1);
+                    _IPatchWnd.OnShowMessageBox($"Found update patch files, Total count {totalCount} Total szie {totalSizeMB}MB", callback1);
                     break;
                 case PatchSystemEventCode.PackageVersionUpdateFailed:
                     Action callback2 = delegate
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryUpdatePackageVersion));
                     };
-                    _sangoPatchWnd.OnShowMessageBox($"Failed to update static version, please check the network status.", callback2);
+                    _IPatchWnd.OnShowMessageBox($"Failed to update static version, please check the network status.", callback2);
                     break;
                 case PatchSystemEventCode.PatchManifestUpdateFailed:
                     Action callback3 = delegate
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryUpdatePatchManifest));
                     };
-                    _sangoPatchWnd.OnShowMessageBox($"Failed to update patch manifest, please check the network status.", callback3);
+                    _IPatchWnd.OnShowMessageBox($"Failed to update patch manifest, please check the network status.", callback3);
                     break;
                 case PatchSystemEventCode.WebFileDownloadFailed:
                     string fileName = eventArgs.ExtensionData[0].ToString();
@@ -143,10 +143,10 @@ namespace SangoUtils.Patchs_YooAsset
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryDownloadWebFiles));
                     };
-                    _sangoPatchWnd.OnShowMessageBox($"Failed to download file : {fileName}", callback4);
+                    _IPatchWnd.OnShowMessageBox($"Failed to download file : {fileName}", callback4);
                     break;
                 case PatchSystemEventCode.OnPatchEnd:
-                    _sangoPatchWnd.OnEnd();
+                    _IPatchWnd.OnEnd();
                     break;
             }
         }
@@ -158,11 +158,11 @@ namespace SangoUtils.Patchs_YooAsset
             long totalDownloadSizeBytes = eventArgs.TotalDownloadSizeBytes;
             long currentDownloadSizeBytes = eventArgs.CurrentDownloadSizeBytes;
             float sliderValue = (float)currentDownloadCount / totalDownloadCount;
-            _sangoPatchWnd.OnUpdateSliderValue(sliderValue);
+            _IPatchWnd.OnUpdateSliderValue(sliderValue);
             string currentSizeMB = (currentDownloadSizeBytes / 1048576f).ToString("f1");
             string totalSizeMB = (totalDownloadSizeBytes / 1048576f).ToString("f1");
             string tips = $"{currentDownloadCount}/{totalDownloadCount} {currentSizeMB}MB/{totalSizeMB}MB";
-            _sangoPatchWnd.OnUpdateTips(tips);
+            _IPatchWnd.OnUpdateTips(tips);
         }
     }
 }

@@ -11,8 +11,8 @@ namespace SangoUtils.Patchs_YooAsset
         private PatchConfig _patchConfig;
         internal static PatchConfig PatchConfig { get => _instance._patchConfig; set => _instance._patchConfig ??= value; }
 
-        private SangoPatchEvent _patchEvent;
-        internal static void SetCustomPatchEvent(SangoPatchEvent patchEvent) { _instance._patchEvent = patchEvent; }
+        private PatchEvent _patchEvent;
+        internal static void SetCustomPatchEvent(PatchEvent patchEvent) { _instance._patchEvent = patchEvent; }
         internal static void CallCustomPatchEvent(CustomPatchEventCode code) { _instance._patchEvent.CallEvent(code); }
 
         private event Action<object, PatchSystemEventArgs> _patchSystemEvent;

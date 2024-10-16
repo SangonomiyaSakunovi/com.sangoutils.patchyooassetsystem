@@ -2,7 +2,7 @@ using UnityEditor;
 
 namespace SangoUtils.Patchs_YooAsset
 {
-    [CustomEditor(typeof(SangoPatchConfig))]
+    [CustomEditor(typeof(PatchConfigObj))]
     internal class SangoPatchConfigInspector : Editor
     {
         private SerializedProperty _cdnPathAndroidEditor;
