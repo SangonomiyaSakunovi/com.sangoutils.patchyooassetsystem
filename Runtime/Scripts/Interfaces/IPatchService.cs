@@ -2,7 +2,7 @@ using System;
 
 namespace SangoUtils.Patchs_YooAsset
 {
-    public interface IPatchWnd
+    public interface IPatchService
     {
         void OnInit(PatchRoot root);
         void OnStart();

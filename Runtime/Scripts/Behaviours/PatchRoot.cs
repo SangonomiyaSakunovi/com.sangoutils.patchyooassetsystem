@@ -14,7 +14,7 @@ namespace SangoUtils.Patchs_YooAsset
         [SerializeField] private MonoBehaviour _patchWnd;
         [SerializeField] private PatchConfigObj _patchConfig;
 
-        private IPatchWnd _IPatchWnd;
+        private IPatchService _IPatchWnd;
 
         private List<DownloadFailedFileInfo> _downloadFailedFileInfos;
 
@@ -30,9 +30,9 @@ namespace SangoUtils.Patchs_YooAsset
             EventBus_Patchs.AddPatchSystemEvent(OnPatchSystemEvent);
             EventBus_Patchs.AddPatchSystem_DownloadProgressUpdateEvent(OnPatchSystemDownloadProgressUpdateEvent);
 
-            if (_patchWnd.GetType().GetInterfaces().Any(iface => iface == typeof(IPatchWnd)))
+            if (_patchWnd.GetType().GetInterfaces().Any(iface => iface == typeof(IPatchService)))
             {
-                _IPatchWnd = (IPatchWnd)_patchWnd;
+                _IPatchWnd = (IPatchService)_patchWnd;
                 _IPatchWnd.OnInit(this);
             }
             else

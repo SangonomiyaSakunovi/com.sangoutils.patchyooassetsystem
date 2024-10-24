@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace SangoUtils.Patchs_YooAsset
 {
-    public class PatchWndSample : MonoBehaviour, IPatchWnd
+    public class PatchWndSample : MonoBehaviour, IPatchService
     {
         private PatchRoot _patchRoot;
         private Transform _messageBoxTrans;
