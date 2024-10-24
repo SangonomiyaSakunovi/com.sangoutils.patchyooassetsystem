@@ -21,7 +21,8 @@ namespace SangoUtils.Patchs_YooAsset
         FoundUpdateFiles,
         PackageVersionUpdateFailed,
         PatchManifestUpdateFailed,
-        WebFileDownloadFailed,
+        PartWebFileDownloadFailed,
+        OnAllDownloadFailedFilesFound,
         OnPatchEnd
     }
 

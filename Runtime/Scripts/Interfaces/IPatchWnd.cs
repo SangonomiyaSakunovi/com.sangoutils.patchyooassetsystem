@@ -6,9 +6,17 @@ namespace SangoUtils.Patchs_YooAsset
     {
         void OnInit(PatchRoot root);
         void OnStart();
-        void OnShowMessageBox(string content, Action onMessageBoxOKBtnClickedCB) ;
-        void OnUpdateTips(string content) ;
-        void OnUpdateSliderValue(float value) ;
-        void OnEnd() ;
+        void OnMessageBoxEvent(PatchMessageBoxEventType messageType, Action onMessageBoxBtnTryAgainClickedCB, params string[] extensionDatas);
+        void OnUpdateDownloadingProgress(int currentDownloadCount, int totalDownloadCount, long currentDownloadSizeBytes, long totalDownloadSizeBytes);
+        void OnEnd();
+    }
+
+    public enum PatchMessageBoxEventType
+    {
+        InitFailed,
+        PackageVersionUpdateFailed,
+        FilesNeedUpdateFound,
+        ManifestUpdateFailed,
+        PartFilesDownloadFailed
     }
 }

@@ -1,5 +1,6 @@
 using SangoUtils.Patchs_YooAsset.Utils;
 using System.Collections;
+using System.Diagnostics.Eventing.Reader;
 using YooAsset;
 
 namespace SangoUtils.Patchs_YooAsset
@@ -8,9 +9,12 @@ namespace SangoUtils.Patchs_YooAsset
     {
         internal override PatchOperationEventCode PatchOperationEventCode => PatchOperationEventCode.DownloadPackageFiles;
 
+        private bool _isPartWebFileDownloadFailed = false;
+
         internal override void OnEvent()
         {
             EventBus_Patchs.CallPatchSystemEvent(this, new PatchSystemEventArgs(PatchSystemEventCode.PatchStatesChange, "开始下载补丁文件！"));
+            _isPartWebFileDownloadFailed = false;
             BeginDownloadASync().Start();
         }
 
@@ -24,14 +28,21 @@ namespace SangoUtils.Patchs_YooAsset
             };
             downloaderOperation.OnDownloadErrorCallback = delegate (string fileName, string error)
             {
-                EventBus_Patchs.CallPatchSystemEvent(this, new PatchSystemEventArgs(PatchSystemEventCode.WebFileDownloadFailed, fileName, error));
+                _isPartWebFileDownloadFailed = true;
+                EventBus_Patchs.CallPatchSystemEvent(this, new PatchSystemEventArgs(PatchSystemEventCode.PartWebFileDownloadFailed, fileName, error));
             };
             downloaderOperation.BeginDownload();
             yield return downloaderOperation;
 
             if (downloaderOperation.Status != EOperationStatus.Succeed)
             {
-                EventBus_Patchs.CallCustomPatchEvent(CustomPatchEventCode.PatchFailed);
+                if (_isPartWebFileDownloadFailed)
+                {
+                    EventBus_Patchs.CallPatchSystemEvent(this, new PatchSystemEventArgs(PatchSystemEventCode.OnAllDownloadFailedFilesFound));
+                    _isPartWebFileDownloadFailed = false;
+                }
+                else
+                    EventBus_Patchs.CallCustomPatchEvent(CustomPatchEventCode.PatchFailed);
                 yield break;
             }
 

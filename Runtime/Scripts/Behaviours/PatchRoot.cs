@@ -1,6 +1,7 @@
 using SangoUtils.Patchs_YooAsset.Utils;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using YooAsset;
@@ -14,6 +15,8 @@ namespace SangoUtils.Patchs_YooAsset
         [SerializeField] private PatchConfigObj _patchConfig;
 
         private IPatchWnd _IPatchWnd;
+
+        private List<DownloadFailedFileInfo> _downloadFailedFileInfos;
 
         private void Awake()
         {
@@ -75,7 +78,7 @@ namespace SangoUtils.Patchs_YooAsset
 
             cfg.PlayMode = _patchConfig.PlayMode;
             cfg.BuildPipeline = _patchConfig.BuildPipeline;
-            
+
             cfg.AOTAssemblyFileNames = _patchConfig.AOTAssemblyFileNames;
             cfg.HotFixAssemblyFileNames = _patchConfig.HotFixAssemblyFileNames;
             cfg.HotFixRootPrefabPath = _patchConfig.HotFixRootPrefabPath;
@@ -104,11 +107,10 @@ namespace SangoUtils.Patchs_YooAsset
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryInitialize));
                     };
-                    _IPatchWnd.OnShowMessageBox($"Failed to initialize package !", callback);
+                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.InitFailed, callback);
                     break;
                 case PatchSystemEventCode.PatchStatesChange:
-                    string tips = eventArgs.ExtensionData[0].ToString();
-                    _IPatchWnd.OnUpdateTips(tips);
+
                     break;
                 case PatchSystemEventCode.FoundUpdateFiles:
                     int totalCount = int.Parse(eventArgs.ExtensionData[0].ToString());
@@ -120,30 +122,37 @@ namespace SangoUtils.Patchs_YooAsset
                     float sizeMB = totalSizeBytes / 1048576f;
                     sizeMB = Mathf.Clamp(sizeMB, 0.1f, float.MaxValue);
                     string totalSizeMB = sizeMB.ToString("f1");
-                    _IPatchWnd.OnShowMessageBox($"Found update patch files, Total count {totalCount} Total szie {totalSizeMB}MB", callback1);
+                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.FilesNeedUpdateFound, callback1, new string[] { totalSizeMB });
                     break;
                 case PatchSystemEventCode.PackageVersionUpdateFailed:
                     Action callback2 = delegate
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryUpdatePackageVersion));
                     };
-                    _IPatchWnd.OnShowMessageBox($"Failed to update static version, please check the network status.", callback2);
+                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.PackageVersionUpdateFailed, callback2);
                     break;
                 case PatchSystemEventCode.PatchManifestUpdateFailed:
                     Action callback3 = delegate
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryUpdatePatchManifest));
                     };
-                    _IPatchWnd.OnShowMessageBox($"Failed to update patch manifest, please check the network status.", callback3);
+                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.ManifestUpdateFailed, callback3);
                     break;
-                case PatchSystemEventCode.WebFileDownloadFailed:
+                case PatchSystemEventCode.PartWebFileDownloadFailed:
                     string fileName = eventArgs.ExtensionData[0].ToString();
                     string Error = eventArgs.ExtensionData[1].ToString();
+
+                    if (_downloadFailedFileInfos == null)
+                        _downloadFailedFileInfos = new List<DownloadFailedFileInfo>();
+
+                    _downloadFailedFileInfos.Add(new DownloadFailedFileInfo() { FileName = fileName, Error = Error });
+                    break;
+                case PatchSystemEventCode.OnAllDownloadFailedFilesFound:
                     Action callback4 = delegate
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryDownloadWebFiles));
                     };
-                    _IPatchWnd.OnShowMessageBox($"Failed to download file : {fileName}", callback4);
+                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.PartFilesDownloadFailed, callback4);
                     break;
                 case PatchSystemEventCode.OnPatchEnd:
                     _IPatchWnd.OnEnd();
@@ -153,16 +162,19 @@ namespace SangoUtils.Patchs_YooAsset
 
         private void OnPatchSystemDownloadProgressUpdateEvent(object sender, PatchSystem_DownloadProgressUpdateEventArgs eventArgs)
         {
-            int totalDownloadCount = eventArgs.TotalDownloadCount;
             int currentDownloadCount = eventArgs.CurrentDownloadCount;
-            long totalDownloadSizeBytes = eventArgs.TotalDownloadSizeBytes;
+            int totalDownloadCount = eventArgs.TotalDownloadCount;
             long currentDownloadSizeBytes = eventArgs.CurrentDownloadSizeBytes;
-            float sliderValue = (float)currentDownloadCount / totalDownloadCount;
-            _IPatchWnd.OnUpdateSliderValue(sliderValue);
-            string currentSizeMB = (currentDownloadSizeBytes / 1048576f).ToString("f1");
-            string totalSizeMB = (totalDownloadSizeBytes / 1048576f).ToString("f1");
-            string tips = $"{currentDownloadCount}/{totalDownloadCount} {currentSizeMB}MB/{totalSizeMB}MB";
-            _IPatchWnd.OnUpdateTips(tips);
+            long totalDownloadSizeBytes = eventArgs.TotalDownloadSizeBytes;
+
+           
+            _IPatchWnd.OnUpdateDownloadingProgress(currentDownloadCount, totalDownloadCount, currentDownloadSizeBytes, totalDownloadSizeBytes);
+        }
+
+        private struct DownloadFailedFileInfo
+        {
+            internal string FileName;
+            internal string Error;
         }
     }
 }
