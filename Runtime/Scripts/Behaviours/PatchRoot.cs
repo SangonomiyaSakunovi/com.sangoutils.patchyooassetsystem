@@ -11,10 +11,10 @@ namespace SangoUtils.Patchs_YooAsset
     [RequireComponent(typeof(PatchEvent))]
     public class PatchRoot : MonoBehaviour
     {
-        [SerializeField] private MonoBehaviour _patchWnd;
+        [SerializeField] private MonoBehaviour _patchService;
         [SerializeField] private PatchConfigObj _patchConfig;
 
-        private IPatchService _IPatchWnd;
+        private IPatchService _IPatchService;
 
         private List<DownloadFailedFileInfo> _downloadFailedFileInfos;
 
@@ -30,10 +30,10 @@ namespace SangoUtils.Patchs_YooAsset
             EventBus_Patchs.AddPatchSystemEvent(OnPatchSystemEvent);
             EventBus_Patchs.AddPatchSystem_DownloadProgressUpdateEvent(OnPatchSystemDownloadProgressUpdateEvent);
 
-            if (_patchWnd.GetType().GetInterfaces().Any(iface => iface == typeof(IPatchService)))
+            if (_patchService.GetType().GetInterfaces().Any(iface => iface == typeof(IPatchService)))
             {
-                _IPatchWnd = (IPatchService)_patchWnd;
-                _IPatchWnd.OnInit(this);
+                _IPatchService = (IPatchService)_patchService;
+                _IPatchService.OnInit(this);
             }
             else
             {
@@ -44,7 +44,7 @@ namespace SangoUtils.Patchs_YooAsset
         private void Start()
         {
             StartOperationASync().Start();
-            _IPatchWnd.OnStart();
+            _IPatchService.OnStart();
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace SangoUtils.Patchs_YooAsset
         public void ReStartDefaultHotFix()
         {
             StartOperationASync().Start();
-            _IPatchWnd.OnStart();
+            _IPatchService.OnStart();
         }
 
         private void SetConfig(ref PatchConfig cfg)
@@ -107,7 +107,7 @@ namespace SangoUtils.Patchs_YooAsset
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryInitialize));
                     };
-                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.InitFailed, callback);
+                    _IPatchService.OnMessageBoxEvent(PatchMessageBoxEventType.InitFailed, callback);
                     break;
                 case PatchSystemEventCode.PatchStatesChange:
 
@@ -122,21 +122,21 @@ namespace SangoUtils.Patchs_YooAsset
                     float sizeMB = totalSizeBytes / 1048576f;
                     sizeMB = Mathf.Clamp(sizeMB, 0.1f, float.MaxValue);
                     string totalSizeMB = sizeMB.ToString("f1");
-                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.FilesNeedUpdateFound, callback1, new string[] { totalSizeMB });
+                    _IPatchService.OnMessageBoxEvent(PatchMessageBoxEventType.FilesNeedUpdateFound, callback1, new string[] { totalSizeMB });
                     break;
                 case PatchSystemEventCode.PackageVersionUpdateFailed:
                     Action callback2 = delegate
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryUpdatePackageVersion));
                     };
-                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.PackageVersionUpdateFailed, callback2);
+                    _IPatchService.OnMessageBoxEvent(PatchMessageBoxEventType.PackageVersionUpdateFailed, callback2);
                     break;
                 case PatchSystemEventCode.PatchManifestUpdateFailed:
                     Action callback3 = delegate
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryUpdatePatchManifest));
                     };
-                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.ManifestUpdateFailed, callback3);
+                    _IPatchService.OnMessageBoxEvent(PatchMessageBoxEventType.ManifestUpdateFailed, callback3);
                     break;
                 case PatchSystemEventCode.PartWebFileDownloadFailed:
                     string fileName = eventArgs.ExtensionData[0].ToString();
@@ -152,10 +152,10 @@ namespace SangoUtils.Patchs_YooAsset
                     {
                         EventBus_Patchs.CallPatchUserEvent(this, new PatchUserEventArgs(PatchUserEventCode.UserTryDownloadWebFiles));
                     };
-                    _IPatchWnd.OnMessageBoxEvent(PatchMessageBoxEventType.PartFilesDownloadFailed, callback4);
+                    _IPatchService.OnMessageBoxEvent(PatchMessageBoxEventType.PartFilesDownloadFailed, callback4);
                     break;
                 case PatchSystemEventCode.OnPatchEnd:
-                    _IPatchWnd.OnEnd();
+                    _IPatchService.OnEnd();
                     break;
             }
         }
@@ -168,7 +168,7 @@ namespace SangoUtils.Patchs_YooAsset
             long totalDownloadSizeBytes = eventArgs.TotalDownloadSizeBytes;
 
            
-            _IPatchWnd.OnUpdateDownloadingProgress(currentDownloadCount, totalDownloadCount, currentDownloadSizeBytes, totalDownloadSizeBytes);
+            _IPatchService.OnUpdateDownloadingProgress(currentDownloadCount, totalDownloadCount, currentDownloadSizeBytes, totalDownloadSizeBytes);
         }
 
         private struct DownloadFailedFileInfo
