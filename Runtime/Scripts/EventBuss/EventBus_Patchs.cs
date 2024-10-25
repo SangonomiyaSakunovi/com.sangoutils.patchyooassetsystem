@@ -5,8 +5,10 @@ namespace SangoUtils.Patchs_YooAsset
     internal class EventBus_Patchs
     {
         private static EventBus_Patchs _instance;
+        public static EventBus_Patchs Instance => _instance;
 
         public EventBus_Patchs() { _instance = this; }
+        public Action<string> DebugLogCB { get; set; }
 
         private PatchConfig _patchConfig;
         internal static PatchConfig PatchConfig { get => _instance._patchConfig; set => _instance._patchConfig ??= value; }

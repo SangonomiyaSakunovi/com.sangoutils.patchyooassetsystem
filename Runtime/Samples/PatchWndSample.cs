@@ -14,6 +14,12 @@ namespace SangoUtils.Patchs_YooAsset
         private Button _messageBoxOkBtn;
         private TMP_Text _messageBoxContent;
 
+        public void PatchStart()
+        {
+            _patchRoot.setDebugLogCB(Debug.Log);
+            _patchRoot.PatchStart();
+        }
+
         public void OnInit(PatchRoot root)
         {
             _patchRoot = root;

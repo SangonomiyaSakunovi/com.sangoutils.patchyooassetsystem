@@ -41,7 +41,12 @@ namespace SangoUtils.Patchs_YooAsset
             }
         }
 
-        private void Start()
+        public void SetDebugLogCB(Action<string> debugLogCB)
+        {
+            EventBus_Patchs.Instance.DebugLogCB = debugLogCB;
+        }
+
+        public void PatchStart()
         {
             StartOperationASync().Start();
             _IPatchService.OnStart();
